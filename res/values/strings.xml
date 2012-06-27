@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, DoomifyActivity!</string>
     <string name="app_name">Doomify</string>
+    <string name="widget_text">Hello Widget!</string>
 
 </resources>
