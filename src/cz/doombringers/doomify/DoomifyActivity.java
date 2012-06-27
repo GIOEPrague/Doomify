@@ -123,7 +123,6 @@ public class DoomifyActivity extends Activity implements OnClickListener {
 		mCursor.moveToFirst();
 	}
 
-	@Override
 	public void onClick(View v) {
 		TextView tv = (TextView) findViewById(R.id.data);
 		TextView time = (TextView) findViewById(R.id.time);
