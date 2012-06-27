@@ -2,7 +2,6 @@ package cz.doombringers.doomify;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,7 +13,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-
 import android.provider.CalendarContract;
 import android.text.format.Time;
 import android.util.Log;
@@ -57,6 +55,8 @@ public class HelloWidget extends AppWidgetProvider {
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		
+	    Log.d("Doomify", "onUpdate");
+	    
 		loadCursor(context);
 
 		Timer timer = new Timer();
@@ -96,7 +96,7 @@ public class HelloWidget extends AppWidgetProvider {
 			Time t2 = new Time();
 			t2.set(start);
 			long cas = t2.toMillis(false) - t.toMillis(false);
-
+			
 			String text = String.format(
 					"%d d, %d h, %d min, %d sec",
 					TimeUnit.MILLISECONDS.toDays(cas),
@@ -121,6 +121,9 @@ public class HelloWidget extends AppWidgetProvider {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+	    
+	    Log.d("Doomify", "onReceive");
+	    
 		// v1.5 fix that doesn't call onDelete Action
 		final String action = intent.getAction();
 		if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) {

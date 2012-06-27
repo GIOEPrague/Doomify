@@ -1,7 +1,6 @@
 package cz.doombringers.doomify;
 
 import java.text.Format;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
@@ -15,14 +14,17 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class DoomifyActivity extends Activity implements OnClickListener {
 	private Cursor mCursor = null;
 
 	private static final String[] COLS = new String[] {
-			CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART,
+	    CalendarContract.Events._ID,
+			CalendarContract.Events.TITLE, 
+			CalendarContract.Events.DTSTART,
 			CalendarContract.Calendars.CALENDAR_DISPLAY_NAME };
 
 	public Long start = 0L;
@@ -35,18 +37,26 @@ public class DoomifyActivity extends Activity implements OnClickListener {
 	public TextView time;
 
 	final Runnable doUpdateView = new Runnable() {
-		public void run() {
+		@Override
+        public void run() {
 			Log.d("time", "tik");
 			time.setText(textToShow);
 		}
 	};
 
-	public void onCreate(Bundle savedInstanceState) {
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
 		loadCursor();
 
+		String[] from = new String[] { CalendarContract.Events.TITLE };
+		int[] to = new int[] { android.R.id.text1 };
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, mCursor, from, to, 0);
+		((ListView) findViewById(R.id.listView)).setAdapter(adapter);
+
+		/*
 		Button b = (Button) findViewById(R.id.next);
 		b.setOnClickListener(this);
 
@@ -59,12 +69,14 @@ public class DoomifyActivity extends Activity implements OnClickListener {
 
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new UpdateTimeTask(), 100, 1000);
+		*/
 
 	}
 
 	class UpdateTimeTask extends TimerTask {
 
-		public void run() {
+		@Override
+        public void run() {
 
 			Time t = new Time();
 			t.setToNow();
