@@ -65,12 +65,6 @@ public class HelloWidget extends AppWidgetProvider {
 			hasEvents = true;
 			start = mCursor.getLong(1);
 		}
-
-		start = mCursor.getLong(1);
-		
-		
-		
-		
 		
 
 
