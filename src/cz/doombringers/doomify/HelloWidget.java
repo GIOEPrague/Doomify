@@ -22,6 +22,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 
+
 public class HelloWidget extends AppWidgetProvider {
 
 	private Cursor mCursor = null;
@@ -105,27 +106,35 @@ public class HelloWidget extends AppWidgetProvider {
 		@Override
 		public void run() {
 			
-			Time t = new Time();
-			t.setToNow();
 
-			Time t2 = new Time();
-			t2.set(start);
-			long cas = t2.toMillis(false) - t.toMillis(false);
+			String text = "";
+			
+			if (hasEvents) {
+				Time t = new Time();
+				t.setToNow();
+	
+				Time t2 = new Time();
+				t2.set(start);
+				long cas = t2.toMillis(false) - t.toMillis(false);
+	
+				text = String.format(
+						"%d d, %d h, %d min, %d sec",
+						TimeUnit.MILLISECONDS.toDays(cas),
+						TimeUnit.MILLISECONDS.toHours(cas)
+								- TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS
+										.toDays(cas)),
+						TimeUnit.MILLISECONDS.toMinutes(cas)
+								- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
+										.toHours(cas)),
+						TimeUnit.MILLISECONDS.toSeconds(cas)
+								- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
+										.toMinutes(cas)));
+				Log.d("time", text);
+				Log.d("time", "update");
+			} else {
+				text = "Calendar is empty";
+			}
 
-			String text = String.format(
-					"%d d, %d h, %d min, %d sec",
-					TimeUnit.MILLISECONDS.toDays(cas),
-					TimeUnit.MILLISECONDS.toHours(cas)
-							- TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS
-									.toDays(cas)),
-					TimeUnit.MILLISECONDS.toMinutes(cas)
-							- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
-									.toHours(cas)),
-					TimeUnit.MILLISECONDS.toSeconds(cas)
-							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-									.toMinutes(cas)));
-			Log.d("time", text);
-			Log.d("time", "update");
 
 			remoteViews.setTextViewText(R.id.widget_textview, text);
 			remoteViews.setTextViewText(R.id.widget_title, title);
