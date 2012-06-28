@@ -1,20 +1,15 @@
 package cz.doombringers.doomify;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.provider.CalendarContract;
 import android.text.format.Time;
@@ -136,8 +131,8 @@ public class HelloWidget extends AppWidgetProvider {
 			}
 
 
-			remoteViews.setTextViewText(R.id.widget_textview, text);
-			remoteViews.setTextViewText(R.id.widget_title, title);
+			//remoteViews.setTextViewText(R.id.widget_textview, text);
+			remoteViews.setTextViewText(R.id.widget_title, title + "\n" + text);
 			
 			appWidgetManager.updateAppWidget(thisWidget, remoteViews);
 		}
