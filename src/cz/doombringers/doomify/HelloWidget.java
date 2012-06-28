@@ -28,6 +28,7 @@ public class HelloWidget extends AppWidgetProvider {
 
 	public Long start = 0L;
 	
+	public Boolean hasEvents = false;
 
 	public String textToShow;
 	
@@ -46,7 +47,11 @@ public class HelloWidget extends AppWidgetProvider {
 				CalendarContract.Events.CONTENT_URI, COLS, selection,
 				selectionArgs, CalendarContract.Events.DTSTART);
 		mCursor.moveToFirst();
-		start = mCursor.getLong(1);
+		
+		if (mCursor.getCount() > 0) {		
+			hasEvents = true;
+			start = mCursor.getLong(1);
+		}
 	}
 	
 	
