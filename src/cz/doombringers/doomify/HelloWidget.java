@@ -7,16 +7,20 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.provider.CalendarContract;
 import android.text.format.Time;
 import android.util.Log;
 import android.widget.RemoteViews;
+
 
 public class HelloWidget extends AppWidgetProvider {
 
@@ -30,38 +34,54 @@ public class HelloWidget extends AppWidgetProvider {
 	
 	public Boolean hasEvents = false;
 
-	public String textToShow;
-	
+
+
 	private void loadCursor(Context c) {
-		String selection = "" + CalendarContract.Events.DTSTART + " >= ?";
+		
+		
+		SharedPreferences prefs = c.getSharedPreferences("PREFS", 0);
+		long e = prefs.getLong("event", 0);
+		
+		
+		String selection = CalendarContract.Events._ID + " = " + String.valueOf(e) + " AND "  + CalendarContract.Events.DTSTART + " >= ?";
 		Time t = new Time();
+		
 		t.setToNow();
 		String dtStart = Long.toString(t.toMillis(false));
 
 		// t.set(59, 59, 23, t.monthDay, t.month, t.year);
 		// String dtEnd = Long.toString(t.toMillis(false));
+		
 
 		String[] selectionArgs = new String[] { dtStart };
-		
+
 		mCursor = c.getContentResolver().query(
 				CalendarContract.Events.CONTENT_URI, COLS, selection,
 				selectionArgs, CalendarContract.Events.DTSTART);
 		mCursor.moveToFirst();
+
 		
 		if (mCursor.getCount() > 0) {		
 			hasEvents = true;
 			start = mCursor.getLong(1);
 		}
+
+		start = mCursor.getLong(1);
+		
+		
+		
+		
+		
+
+
 	}
-	
-	
-	
+
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
-		
-	    Log.d("Doomify", "onUpdate");
-	    
+
+		Log.d("Doomify", "onUpdate");
+
 		loadCursor(context);
 
 		Timer timer = new Timer();
@@ -75,14 +95,9 @@ public class HelloWidget extends AppWidgetProvider {
 	}
 
 	private class MyTime extends TimerTask {
-		
-		
-		
 		RemoteViews remoteViews;
 		AppWidgetManager appWidgetManager;
 		ComponentName thisWidget;
-		DateFormat format = SimpleDateFormat.getTimeInstance(
-				SimpleDateFormat.MEDIUM, Locale.getDefault());
 
 		public MyTime(Context context, AppWidgetManager appWidgetManager) {
 			this.appWidgetManager = appWidgetManager;
@@ -93,15 +108,14 @@ public class HelloWidget extends AppWidgetProvider {
 
 		@Override
 		public void run() {
-			
-			
+
 			Time t = new Time();
 			t.setToNow();
 
 			Time t2 = new Time();
 			t2.set(start);
 			long cas = t2.toMillis(false) - t.toMillis(false);
-			
+
 			String text = String.format(
 					"%d d, %d h, %d min, %d sec",
 					TimeUnit.MILLISECONDS.toDays(cas),
@@ -115,10 +129,8 @@ public class HelloWidget extends AppWidgetProvider {
 							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
 									.toMinutes(cas)));
 			Log.d("time", text);
-			textToShow = text;
-			
-			
-			
+			Log.d("time", "update");
+
 			remoteViews.setTextViewText(R.id.widget_textview, text);
 			appWidgetManager.updateAppWidget(thisWidget, remoteViews);
 		}
@@ -126,9 +138,9 @@ public class HelloWidget extends AppWidgetProvider {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-	    
-	    Log.d("Doomify", "onReceive");
-	    
+
+		Log.d("Doomify", "onReceive");
+
 		// v1.5 fix that doesn't call onDelete Action
 		final String action = intent.getAction();
 		if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) {
