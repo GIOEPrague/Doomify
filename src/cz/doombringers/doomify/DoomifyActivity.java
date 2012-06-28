@@ -61,6 +61,9 @@ public class DoomifyActivity extends Activity implements OnClickListener {
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, mCursor, from, to, 0);
 		ListView list = ((ListView) findViewById(R.id.listView));
 		list.setAdapter(adapter);
+		
+		View emptyView = findViewById(R.id.empty);
+		list.setEmptyView(emptyView);
 
 		list.setOnItemClickListener(new OnItemClickListener() {
             @Override
