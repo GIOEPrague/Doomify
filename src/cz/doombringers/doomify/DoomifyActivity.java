@@ -5,6 +5,8 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,15 +16,18 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DoomifyActivity extends Activity implements OnClickListener {
 	private Cursor mCursor = null;
 
 	private static final String[] COLS = new String[] {
-	    CalendarContract.Events._ID,
+	        CalendarContract.Events._ID,
 			CalendarContract.Events.TITLE, 
 			CalendarContract.Events.DTSTART,
 			CalendarContract.Calendars.CALENDAR_DISPLAY_NAME };
@@ -54,8 +59,21 @@ public class DoomifyActivity extends Activity implements OnClickListener {
 		String[] from = new String[] { CalendarContract.Events.TITLE };
 		int[] to = new int[] { android.R.id.text1 };
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, mCursor, from, to, 0);
-		((ListView) findViewById(R.id.listView)).setAdapter(adapter);
+		ListView list = ((ListView) findViewById(R.id.listView));
+		list.setAdapter(adapter);
 
+		list.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                    long id) {               
+                Toast.makeText(DoomifyActivity.this, "You have selected event with ID " + id, Toast.LENGTH_SHORT).show();
+                SharedPreferences prefs = getSharedPreferences("PREFS", 0);
+                Editor e = prefs.edit();
+                e.putLong("event", id);
+                e.commit();
+            }		    
+		});
+		
 		/*
 		Button b = (Button) findViewById(R.id.next);
 		b.setOnClickListener(this);
@@ -123,7 +141,8 @@ public class DoomifyActivity extends Activity implements OnClickListener {
 		mCursor.moveToFirst();
 	}
 
-	public void onClick(View v) {
+	@Override
+    public void onClick(View v) {
 		TextView tv = (TextView) findViewById(R.id.data);
 		TextView time = (TextView) findViewById(R.id.time);
 		String title = "N/A";
