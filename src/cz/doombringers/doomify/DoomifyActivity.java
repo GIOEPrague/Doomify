@@ -71,6 +71,7 @@ public class DoomifyActivity extends Activity implements OnClickListener {
                 Editor e = prefs.edit();
                 e.putLong("event", id);
                 e.commit();
+                DoomifyActivity.this.finish();
             }		    
 		});
 		
