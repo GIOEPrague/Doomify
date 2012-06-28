@@ -31,6 +31,7 @@ public class HelloWidget extends AppWidgetProvider {
 			CalendarContract.Calendars.CALENDAR_DISPLAY_NAME };
 
 	public Long start = 0L;
+	public String title = "";
 	
 	public Boolean hasEvents = false;
 
@@ -64,6 +65,7 @@ public class HelloWidget extends AppWidgetProvider {
 		if (mCursor.getCount() > 0) {		
 			hasEvents = true;
 			start = mCursor.getLong(1);
+			title = mCursor.getString(0);
 		}
 		
 
@@ -102,7 +104,7 @@ public class HelloWidget extends AppWidgetProvider {
 
 		@Override
 		public void run() {
-
+			
 			Time t = new Time();
 			t.setToNow();
 
@@ -126,6 +128,8 @@ public class HelloWidget extends AppWidgetProvider {
 			Log.d("time", "update");
 
 			remoteViews.setTextViewText(R.id.widget_textview, text);
+			remoteViews.setTextViewText(R.id.widget_title, title);
+			
 			appWidgetManager.updateAppWidget(thisWidget, remoteViews);
 		}
 	}
